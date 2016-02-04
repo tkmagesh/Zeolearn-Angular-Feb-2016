@@ -1,0 +1,31 @@
+1. Resource availability on client
+     2010 (2GB, dual core)
+     2015 (16GB, )
+     
+2. Browsers become powerful
+    - Virtual Operating System
+        - Data Storage (Local Storage, Session Storage, IndexedDB)
+        - File System Access (File System API)
+        - Multi Threading (Web Workers)
+        - Hosting the app (install) (Offline Application Cache, Service Workers)
+        - Sockets (Web Sockets, Server Sent Events, WebRTC)
+        - Device Access (webcam, mic)
+        
+3. JavaScript Engines
+
+
+Salary Calculator
+    Basic (10000)
+    HRA (2000)
+    DA (3000)
+    
+    Tax (%) (10)
+    
+    Total => 13500
+    
+
+
+
+
+        
+        
