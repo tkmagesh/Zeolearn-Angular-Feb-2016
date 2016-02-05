@@ -1,0 +1,23 @@
+Module
+    - Container for the components
+    - Register the components in the module
+    - Dependency Injection
+    
+Scope (ViewModel)
+
+Directive
+    - Manipulate DOM nodes
+    - Bind DOM with Scope
+    
+Filter
+    - Transform the data for presentation purposes
+    
+Controller
+    - Function to configure the scope object
+
+
+Value
+Factory
+Service
+Constant
+Provider    
