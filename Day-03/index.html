@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        body, section{
+            display: block;
+            border : 1px solid black;
+            padding : 20px;
+            margin: 20px;
+            background-color: #e7e7e7
+        }
+    </style>
+    <script src="angular.js"></script>
+    <script>
+        var myApp = angular.module('myApp', []);
+
+        myApp.run(function($rootScope){
+            window.scope = $rootScope;
+            $rootScope.name = 'root';
+        });
+
+        myApp.controller('section1Controller', function($scope){
+            $scope.name = 'Section -1';
+        });
+
+        myApp.controller('section2Controller', function($scope){
+            $scope.name = 'Section -2';
+        });
+
+        myApp.controller('dummyController', function($scope){
+            //$scope.name = 'Section -1';
+        });
+    </script>
+</head>
+<body ng-app="myApp">
+    <div> name -> {{name}}</div>
+    <section ng-controller="section1Controller">
+        <div>name -> {{name}}</div>
+         <section ng-controller="dummyController">
+            <div> name ->  {{name}}</div>
+        </section>
+    </section>
+    <section ng-controller="section2Controller">
+        <div> name -> {{name}}</div>
+    </section>
+
+</body>
+</html>
