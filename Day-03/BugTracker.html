@@ -27,15 +27,18 @@
             border-radius: 5px;
             margin-bottom: 10px;
         }
+        li span{
+            cursor: pointer;
+        }
     </style>
     <!--
     Use Cases
     ============
-    1. Add a new bug
-    2. List the bugs
-    3. Toggle the completion status of the bug
-    4. Remove closed bugs
-    5. Display statistics
+    1. Add a new bug - done
+    2. List the bugs - done
+    3. Toggle the completion status of the bug - done
+    4. Remove closed bugs - Assignment
+    5. Display statistics - Assignment
     6. Search for bugs
     7. Sort the bugs
     8. Improvise the bug display
@@ -49,17 +52,33 @@
     <script src="angular.js"></script>
     <script>
         var bugTrackerApp = angular.module('bugTrackerApp', []);
+        bugTrackerApp.controller('bugsController', function($scope){
+           $scope.bugs = [
+               { name : 'Data validation failure', isClosed : false},
+               { name : 'Server communication disrupts', isClosed : false},
+               { name : 'Transactions are not committed', isClosed : false},
+               { name : 'Unable to add a new bug', isClosed : false},
+           ];
+           $scope.newBugName = '';
+           $scope.addNew = function(){
+               $scope.bugs.push({name : $scope.newBugName, isClosed : false});
+               $scope.newBugName = '';
+           };
+           $scope.toggleBug = function(bug){
+               bug.isClosed = !bug.isClosed;
+           }
+        });
 
     </script>
 </head>
 <body ng-app='bugTrackerApp'>
     <h1>Bug Tracker</h1>
     <hr>
-    <div class="content">
+    <div class="content" ng-controller="bugsController">
         <section class="statistics">
             <span class="closed">2</span>
             <span>/</span>
-            <span>5</span>
+            <span>{{bugs.length}}</span>
         </section>
         <section class="search">
             <label for="">Search :</label>
@@ -75,12 +94,15 @@
         </section>
         <section class="list">
             <label for="">Bug :</label>
-            <input type="text" name="" id="">
-            <input type="button" value="Add Bug">
+            <input type="text" ng-model='newBugName'>
+            <input type="button" value="Add Bug" ng-click="addNew()">
             <input type="button" value="Remove Closed">
             <ol>
-                <li class="closed"><span>Data validation failure</span></li>
-                <li><span>Server communication disrupts</span></li>
+                <li ng-repeat="bug in bugs track by $index"
+                   ng-click="toggleBug(bug)">
+
+                    <span ng-class="{closed : bug.isClosed}">{{bug}}</span>
+                </li>
             </ol>
         </section>
     </div>
