@@ -39,8 +39,8 @@
     3. Toggle the completion status of the bug - done
     4. Remove closed bugs - done
     5. Display statistics - done
-    6. Search for bugs - done
-    7. Sort the bugs - done
+    6. Search for bugs
+    7. Sort the bugs
     8. Improvise the bug display
     9. Persist bugs in localStorage
     10. Display 'createdAt'
@@ -53,55 +53,37 @@
     <script>
         var bugTrackerApp = angular.module('bugTrackerApp', []);
 
-        /*bugTrackerApp.value('Bug', function (defaults){
-            defaults = defaults || {};
-            this.name = defaults.name || '';
-            this.isClosed = defaults.isClosed || false;
-
-            this.toggle = function(){
+        bugTrackerApp.factory('bug', function(){
+            var toggle = function(){
                 this.isClosed = !this.isClosed;
-            };
-        });*/
-
-        //Convert the following in to a value, inject it in the controller and make sure it works
-        /*
-        Value
-            - simple, single step entity like object, function, string, boolean, number
-        Factory
-            - a function which constructs an application entity and returns it
-        */
-
-        bugTrackerApp.value('defaultBugName', '[An empty default bug]')
-
-        bugTrackerApp.factory("Bug", function(defaultBugName){
-            function Bug(defaults){
-                defaults = defaults || {};
-                this.name = defaults.name || defaultBugName;
-                this.isClosed = defaults.isClosed || false;
             }
-            Bug.prototype.toggle = function(){
-                this.isClosed = !this.isClosed;
+
+            return function(defaults){
+                 return {
+                    name : defaults.name || '',
+                    isClosed : defaults.isClosed || false,
+                    toggle : toggle
+                }
             };
-            return Bug;
-        });
+        })
 
-        bugTrackerApp.controller('bugsController', function($scope, Bug){
+
+        bugTrackerApp.controller('bugsController', function($scope, bug){
            $scope.bugs = [
-               new Bug({ name : 'Data validation failure'}),
-               new Bug({ name : 'Unable to add a new bug', isClosed : true}),
-               new Bug({ name : 'Server communication disrupts'}),
-               new Bug({ name : 'Transactions are not committed'}),
-               new Bug({ name : 'Possumus illustriora se appellat, iudicem elit iudicem. Legam deserunt aut firmissimum, nostrud varias senserit probant. Do quis sint nam laborum qui arbitror imitarentur te ingeniis se ubi a sint fore esse a an quid labore sed'}),
+               bug({ name : 'Data validation failure'}),
+               bug({ name : 'Server communication disrupts'}),
+               bug({ name : 'Transactions are not committed'}),
+               bug({ name : 'Unable to add a new bug', isClosed : true}),
            ];
-
            $scope.newBugName = '';
            $scope.addNew = function(){
-               $scope.bugs.push(new Bug({name : $scope.newBugName, isClosed : false}));
+               $scope.bugs.push({name : $scope.newBugName, isClosed : false});
                $scope.newBugName = '';
            };
            $scope.toggleBug = function(bug){
                //bug.isClosed = !bug.isClosed;
                 bug.toggle();
+               //bugOperations.toggle.apply(bug);
            };
            $scope.removeClosed = function(){
                for(var i=$scope.bugs.length-1; i>=0; i--)
@@ -118,15 +100,6 @@
            };
         });
 
-        bugTrackerApp.value('defaultTrimLength', 50);
-        bugTrackerApp.filter('trimText', function(defaultTrimLength){
-            //returning the actual filter
-            return function(data, trimLength){
-                trimLength = trimLength || defaultTrimLength;
-                return data.length <= trimLength ? data : data.substr(0,trimLength) + '...';
-            };
-        });
-
     </script>
 </head>
 <body ng-app='bugTrackerApp'>
@@ -140,16 +113,15 @@
         </section>
         <section class="search">
             <label for="">Search :</label>
-            <input type="text" ng-model='searchBug.name'>
+            <input type="text" name="" id="">
             <label for="">Is Closed ? :</label>
-            <input type="checkbox" ng-model="searchBug.isClosed">
-            <input type="button" value="Show All" ng-click="searchBug.isClosed = undefined" ng-hide="searchBug.isClosed == undefined">
+            <input type="checkbox" name="" id="">
         </section>
         <section class="sort">
             <label for="">Order By : </label>
-            <input type="text" ng-model="sortBug">
+            <input type="text" name="" id="">
             <label for="">Descending ? :</label>
-            <input type="checkbox" ng-model="sortBugDescending">
+            <input type="checkbox" name="" id="">
         </section>
         <section class="list">
             <label for="">Bug :</label>
@@ -157,8 +129,10 @@
             <input type="button" value="Add Bug" ng-click="addNew()">
             <input type="button" value="Remove Closed" ng-click="removeClosed()">
             <ol>
-                <li ng-repeat="bug in (bugs | filter:searchBug | orderBy:sortBug:sortBugDescending) track by $index" ng-click="toggleBug(bug)">
-                    <span ng-class="{closed : bug.isClosed}">{{bug.name | trimText}}</span>
+                <li ng-repeat="bug in bugs track by $index"
+                   ng-click="toggleBug(bug)">
+
+                    <span ng-class="{closed : bug.isClosed}">{{bug}}</span>
                 </li>
             </ol>
         </section>
