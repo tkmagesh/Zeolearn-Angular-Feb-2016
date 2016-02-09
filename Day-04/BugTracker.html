@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bug Tracker</title>
+    <style>
+        .closed{
+            color : red;
+            text-decoration: line-through;
+            font-style: italic;
+            font-weight: bold;
+        }
+        section{
+            margin-bottom: 10px;
+        }
+        section.statistics{
+            font-size: 18pt;
+        }
+        ol{
+            width: 40%;
+            list-style: none;
+        }
+        li {
+            border : 1px solid gray;
+            background-color: #e7e7e7;
+            padding: 5px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        li span{
+            cursor: pointer;
+        }
+    </style>
+    <!--
+    Use Cases
+    ============
+    1. Add a new bug - done
+    2. List the bugs - done
+    3. Toggle the completion status of the bug - done
+    4. Remove closed bugs - done
+    5. Display statistics - done
+    6. Search for bugs
+    7. Sort the bugs
+    8. Improvise the bug display
+    9. Persist bugs in localStorage
+    10. Display 'createdAt'
+    11. Persist bugs in server
+    12. Add validations
+    13. Categorize the bugs (routing)
+    14. Testing
+    -->
+    <script src="angular.js"></script>
+    <script>
+        var bugTrackerApp = angular.module('bugTrackerApp', []);
+
+        /*bugTrackerApp.value('Bug', function (defaults){
+            defaults = defaults || {};
+            this.name = defaults.name || '';
+            this.isClosed = defaults.isClosed || false;
+
+            this.toggle = function(){
+                this.isClosed = !this.isClosed;
+            };
+        });*/
+
+        //Convert the following in to a value, inject it in the controller and make sure it works
+        function Bug(defaults){
+            defaults = defaults || {};
+            this.name = defaults.name || '';
+            this.isClosed = defaults.isClosed || false;
+        }
+        Bug.prototype.toggle = function(){
+            this.isClosed = !this.isClosed;
+        };
+
+
+        bugTrackerApp.controller('bugsController', function($scope){
+           $scope.bugs = [
+               new Bug({ name : 'Data validation failure'}),
+               new Bug({ name : 'Server communication disrupts'}),
+               new Bug({ name : 'Transactions are not committed'}),
+               new Bug({ name : 'Unable to add a new bug', isClosed : true}),
+           ];
+           $scope.newBugName = '';
+           $scope.addNew = function(){
+               $scope.bugs.push({name : $scope.newBugName, isClosed : false});
+               $scope.newBugName = '';
+           };
+           $scope.toggleBug = function(bug){
+               //bug.isClosed = !bug.isClosed;
+                bug.toggle();
+           };
+           $scope.removeClosed = function(){
+               for(var i=$scope.bugs.length-1; i>=0; i--)
+                   if ($scope.bugs[i].isClosed)
+                       $scope.bugs.splice(i,1);
+           };
+
+           $scope.getClosedCount = function(){
+               var result = 0;
+               for(var i=0; i<$scope.bugs.length; i++)
+                   if ($scope.bugs[i].isClosed)
+                       ++result;
+               return result;
+           };
+        });
+
+    </script>
+</head>
+<body ng-app='bugTrackerApp'>
+    <h1>Bug Tracker</h1>
+    <hr>
+    <div class="content" ng-controller="bugsController">
+        <section class="statistics">
+            <span class="closed">{{getClosedCount()}}</span>
+            <span>/</span>
+            <span>{{bugs.length}}</span>
+        </section>
+        <section class="search">
+            <label for="">Search :</label>
+            <input type="text" name="" id="">
+            <label for="">Is Closed ? :</label>
+            <input type="checkbox" name="" id="">
+        </section>
+        <section class="sort">
+            <label for="">Order By : </label>
+            <input type="text" name="" id="">
+            <label for="">Descending ? :</label>
+            <input type="checkbox" name="" id="">
+        </section>
+        <section class="list">
+            <label for="">Bug :</label>
+            <input type="text" ng-model='newBugName'>
+            <input type="button" value="Add Bug" ng-click="addNew()">
+            <input type="button" value="Remove Closed" ng-click="removeClosed()">
+            <ol>
+                <li ng-repeat="bug in bugs track by $index"
+                   ng-click="toggleBug(bug)">
+
+                    <span ng-class="{closed : bug.isClosed}">{{bug}}</span>
+                </li>
+            </ol>
+        </section>
+    </div>
+</body>
+</html>
