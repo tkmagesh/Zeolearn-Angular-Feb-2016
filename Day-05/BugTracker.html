@@ -77,7 +77,8 @@
 
         var bugTrackerApp = angular.module('bugTrackerApp', ['utils']);
 
-        bugTrackerApp.value('defaultBugName', '[An empty default bug]')
+        bugTrackerApp.value('defaultBugName', '[An empty default bug]');
+
 
         bugTrackerApp.factory("Bug", function(defaultBugName){
             function Bug(defaults){
@@ -123,6 +124,7 @@
             function removeBug(bug){
                  storage.removeItem(bug.id);
             }
+            console.log('returning the bugStorage object');
             return {
                 getAll : getAllBugs,
                 add : addBug,
@@ -151,6 +153,7 @@
         });
 
         bugTrackerApp.controller('bugsController', function($scope, bugsCollection){
+
 
            $scope.bugs = bugsCollection;
            $scope.newBugName = '';
