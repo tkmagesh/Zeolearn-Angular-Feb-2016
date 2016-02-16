@@ -95,7 +95,7 @@
         });
 
 
-
+        /*Refactor all server communication code in to a separate service / factory (no $http in the controller) */
         bugTrackerApp.controller('bugsController', function($scope, $http, Bug){
            $scope.bugs = [];
            $http
