@@ -57,3 +57,33 @@ var adder = (function(){
         onResult : onResult
     }
 })();
+
+adder.onResult(function(result){
+    console.log('[Consumer] result = ', result);
+});
+adder.add(100,200);
+
+//Using Promise
+function addAsync(x,y){
+    var promise = new Promise(function(resolveFn, rejectFn){
+        console.log("[Provider] processing ", x , " and ", y);
+        setTimeout(function(){
+            var result = x + y;
+            console.log("[Provider] returning result");
+            resolveFn(result);
+        }, 5000);
+    });
+    return promise;
+}
+
+//Using defered
+function addAsync(x,y){
+    var deferred = Promise.defer();
+    console.log("[Provider] processing ", x , " and ", y);
+    setTimeout(function(){
+        var result = x + y;
+        console.log("[Provider] returning result");
+        deferred.resolve(result);
+    }, 5000);
+    return deferred.promise;
+}
