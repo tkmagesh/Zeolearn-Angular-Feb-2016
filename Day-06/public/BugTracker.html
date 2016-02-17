@@ -94,36 +94,81 @@
             return Bug;
         });
 
+        bugTrackerApp.service('bugService', function($http, Bug, $q){
+            /*this.getAll = function(scope){
+                var deferred = $q.defer();
+
+                var httpPromise =  $http.get('http://localhost:3000/bugs');
+                httpPromise.then(function(response){
+                    var result = response.data.map(function(bugData){
+                       return new Bug(bugData);
+                    });
+                    deferred.resolve(result);
+                });
+
+                return deferred.promise;
+            }*/
+
+            /*this.getAll = function(scope){
+
+                var httpPromise =  $http.get('http://localhost:3000/bugs');
+                var servicePromise = httpPromise.then(function(response){
+                    var result = response.data.map(function(bugData){
+                       return new Bug(bugData);
+                    });
+                    return result;
+                });
+                return servicePromise;
+            }*/
+
+            this.getAll = function(scope){
+                return $http.get('http://localhost:3000/bugs')
+                    .then(function(response){
+                        return response.data.map(function(bugData){
+                            return new Bug(bugData);
+                        });
+                });
+
+            };
+            this.addNew = function(bug){
+                return $http
+                   .post('http://localhost:3000/bugs', bug)
+                   .then(function(response){
+                        return new Bug(response.data);
+                    });
+            };
+            this.remove = function(bug){
+                return  $http.delete('http://localhost:3000/bugs/' + bug.id);
+            };
+            this.save = function(bug){
+                $http.put('http://localhost:3000/bugs/' + bug.id, bug);
+            };
+        })
 
         /*Refactor all server communication code in to a separate service / factory (no $http in the controller) */
-        bugTrackerApp.controller('bugsController', function($scope, $http, Bug){
+        bugTrackerApp.controller('bugsController', function($scope, $http, Bug, bugService){
            $scope.bugs = [];
-           $http
-               .get('http://localhost:3000/bugs')
-               .then(function(response){
-                   $scope.bugs = response.data.map(function(bugData){
-                       return new Bug(bugData);
-                   });
-               });
+           bugService.getAll().then(function(bugs){
+                $scope.bugs = bugs;
+           });
+
            $scope.newBugName = '';
            $scope.addNew = function(){
-               $http
-                   .post('http://localhost:3000/bugs', new Bug({name : $scope.newBugName}))
-                   .then(function(response){
-                        $scope.bugs.push(new Bug(response.data));
-                    });
+               bugService.addNew(new Bug({name : $scope.newBugName})).then(function(newBug){
+                   $scope.bugs.push(newBug);
+               });
                $scope.newBugName = '';
            };
            $scope.toggle = function(bug){
                bug.toggle();
-               $http.put('http://localhost:3000/bugs/' + bug.id, bug);
+               bugService.save(bug);
            };
 
            $scope.removeClosed = function(){
               for(var i=$scope.bugs.length-1; i>=0; i--){
                   var bug = $scope.bugs[i];
                   if (bug.isClosed){
-                      $http.delete('http://localhost:3000/bugs/' + bug.id);
+                      bugService.remove(bug);
                       $scope.bugs.splice(i,1);
                   }
               }

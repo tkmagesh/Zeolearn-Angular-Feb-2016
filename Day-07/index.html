@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="angular.js"></script>
+    <script>
+        var myApp = angular.module("myApp", []);
+
+        myApp.provider('greet', function(){
+            var name = 'Magesh';
+            return {
+                setName : function(value){
+                    name = value;
+                },
+                $get : function(){
+                    return {
+                        print : function(){
+                            console.log(name);
+                        }
+                    }
+                }
+            };
+        });
+
+
+        //providers, constants
+        myApp.config(function(greetProvider){
+            console.log('app config');
+            console.log('greetProvider -> ', greetProvider);
+            greetProvider.setName('Yaroslav');
+        });
+
+        //value, factory, services
+        myApp.run(function(greet){
+            console.log('app initialization');
+            console.log('greet -> ', greet);
+            greet.print();
+        });
+
+    </script>
+</head>
+<body ng-app="myApp">
+
+</body>
+</html>

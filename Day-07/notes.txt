@@ -1,0 +1,14 @@
+Providers - > factory for a factory
+
+config -> module.config(function(){})
+init -> module.run(function())
+
+1. provider - config phase
+
+function (){ //factory in config
+    return {
+        $get : function(){ //factory in init
+            return whatever
+        }
+    }
+}
