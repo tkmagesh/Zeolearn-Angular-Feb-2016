@@ -6,9 +6,9 @@
     <script src="angular.js"></script>
     <script>
         var myApp = angular.module("myApp", []);
-
-        myApp.provider('greet', function(){
-            var name = 'Magesh';
+        myApp.constant('defaultName', 'Yaroslav')
+        myApp.provider('greet', function(defaultName){
+            var name = defaultName;
             return {
                 setName : function(value){
                     name = value;
@@ -25,10 +25,11 @@
 
 
         //providers, constants
-        myApp.config(function(greetProvider){
+        myApp.config(function(greetProvider, dummyProvider){
             console.log('app config');
             console.log('greetProvider -> ', greetProvider);
-            greetProvider.setName('Yaroslav');
+            console.log('dummyProvider -> ', dummyProvider);
+            //greetProvider.setName('Yaroslav');
         });
 
         //value, factory, services
@@ -36,6 +37,10 @@
             console.log('app initialization');
             console.log('greet -> ', greet);
             greet.print();
+        });
+
+        myApp.service('dummy', function(){
+            return 'dummyValue';
         });
 
     </script>

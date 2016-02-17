@@ -12,3 +12,5 @@ function (){ //factory in config
         }
     }
 }
+
+2. constant is nothing but a value that is available in config();
