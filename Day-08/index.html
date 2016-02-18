@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Routing Demo</title>
+    <script src="angular.js"></script>
+    <script src="angular-route.js"></script>
+    <script>
+        var myApp = angular.module("myApp", ["ngRoute"]);
+        myApp.config(function($routeProvider){
+            $routeProvider
+                .when("/products", {
+                    /*template : '<h2>Products</h2>'*/
+                    templateUrl : 'templates/productsTemplate.html',
+                    controller : 'productsController'
+                })
+                .when("/products/:pid", {
+                    templateUrl : 'templates/productInfoTemplate.html',
+                    controller : 'productInfoController'
+                })
+                .when("/customers", {
+                    /*template : '<h2>Customers</h2>'*/
+                    templateUrl : 'templates/customersTemplate.html'
+                })
+                .otherwise({
+                    redirectTo : "/products"
+                });
+        });
+        myApp.service("productsService", function(){
+            var _products = [
+                    {id : 1, name : 'Pen', cost : 5, units : 50, desc : 'Nam eram fabulas cohaerescant et aut ingeniis praesentibus, non esse velit iis expetendis, aut irure summis nisi fabulas. Cernantur non fabulas, eram eu commodo ex excepteur aut irure ullamco quo voluptate comprehenderit eu possumus. Et varias ingeniis, de irure litteris in quem aut non aliqua doctrina, enim et ex magna probant non nisi quibusdam efflorescere nam legam ex singulis, et dolore litteris laborum an est duis expetendis cernantur. Et eiusmod reprehenderit, consequat fore probant nescius et duis iudicem non possumus ut possumus e quorum tempor do magna mandaremus ne nulla anim si ad dolore cillum ita commodo, cupidatat aute varias arbitror aute, ex varias singulis mandaremus. Dolore ut ingeniis te eram, fore cupidatat eu tractavissent, est ea illustriora e cillum laboris firmissimum, quo summis ne irure, varias mentitum graviterque, ubi lorem fabulas possumus, iis non esse deserunt. Varias nostrud te mandaremus '},
+                    {id : 2, name : 'Hen', cost : 100, units : 10, desc : 'Nam eram fabulas cohaerescant et aut ingeniis praesentibus, non esse velit iis expetendis, aut irure summis nisi fabulas. Cernantur non fabulas, eram eu commodo ex excepteur aut irure ullamco quo voluptate comprehenderit eu possumus. Et varias ingeniis, de irure litteris in quem aut non aliqua doctrina, enim et ex magna probant non nisi quibusdam efflorescere nam legam ex singulis, et dolore litteris laborum an est duis expetendis cernantur. Et eiusmod reprehenderit, consequat fore probant nescius et duis iudicem non possumus ut possumus e quorum tempor do magna mandaremus ne nulla anim si ad dolore cillum ita commodo, cupidatat aute varias arbitror aute, ex varias singulis mandaremus. Dolore ut ingeniis te eram, fore cupidatat eu tractavissent, est ea illustriora e cillum laboris firmissimum, quo summis ne irure, varias mentitum graviterque, ubi lorem fabulas possumus, iis non esse deserunt. Varias nostrud te mandaremus '},
+                    {id : 3, name : 'Ten', cost : 10, units : 10, desc : 'Nam eram fabulas cohaerescant et aut ingeniis praesentibus, non esse velit iis expetendis, aut irure summis nisi fabulas. Cernantur non fabulas, eram eu commodo ex excepteur aut irure ullamco quo voluptate comprehenderit eu possumus. Et varias ingeniis, de irure litteris in quem aut non aliqua doctrina, enim et ex magna probant non nisi quibusdam efflorescere nam legam ex singulis, et dolore litteris laborum an est duis expetendis cernantur. Et eiusmod reprehenderit, consequat fore probant nescius et duis iudicem non possumus ut possumus e quorum tempor do magna mandaremus ne nulla anim si ad dolore cillum ita commodo, cupidatat aute varias arbitror aute, ex varias singulis mandaremus. Dolore ut ingeniis te eram, fore cupidatat eu tractavissent, est ea illustriora e cillum laboris firmissimum, quo summis ne irure, varias mentitum graviterque, ubi lorem fabulas possumus, iis non esse deserunt. Varias nostrud te mandaremus '},
+                    {id : 4, name : 'Zen', cost : 100000, units : 0, desc : 'Nam eram fabulas cohaerescant et aut ingeniis praesentibus, non esse velit iis expetendis, aut irure summis nisi fabulas. Cernantur non fabulas, eram eu commodo ex excepteur aut irure ullamco quo voluptate comprehenderit eu possumus. Et varias ingeniis, de irure litteris in quem aut non aliqua doctrina, enim et ex magna probant non nisi quibusdam efflorescere nam legam ex singulis, et dolore litteris laborum an est duis expetendis cernantur. Et eiusmod reprehenderit, consequat fore probant nescius et duis iudicem non possumus ut possumus e quorum tempor do magna mandaremus ne nulla anim si ad dolore cillum ita commodo, cupidatat aute varias arbitror aute, ex varias singulis mandaremus. Dolore ut ingeniis te eram, fore cupidatat eu tractavissent, est ea illustriora e cillum laboris firmissimum, quo summis ne irure, varias mentitum graviterque, ubi lorem fabulas possumus, iis non esse deserunt. Varias nostrud te mandaremus '},
+                ];
+            this.getAll = function(){
+                return _products;
+            };
+            this.getById = function(id){
+                return _products.filter(function(product){
+                    return product.id === id;
+                })[0];
+            };
+        });
+        myApp.controller("productsController", function(productsService, $scope){
+            $scope.products = productsService.getAll();
+        });
+        myApp.controller("productInfoController", function($scope, productsService, $routeParams){
+            console.log($routeParams);
+            var id = parseInt($routeParams.pid);
+            $scope.product = productsService.getById(id);
+        });
+    </script>
+</head>
+<body ng-app="myApp">
+    <h1>Amzn.com</h1>
+    <hr>
+    <header>
+        <a href="#/products">Products</a> &nbsp; <a href="#/customers">Customers</a>
+    </header>
+    <div ng-view></div>
+</body>
+</html>

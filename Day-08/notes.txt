@@ -1,0 +1,24 @@
+amzn.com
+amzn.com/electronics
+amzn.com/electronics/phones
+amzn.com/electronics/phones/motorola
+amzn.com/electronics/phones/motorola/moto-x
+
+inbox
+inbox/official
+inbox/official/important
+inbox/official/important/mail1
+
+
+100000
+
+1. various stages of the application should be bookmarkable
+
+RIA = desktop apps run in the browser
+
+
+
+URL
+Server state  #  client state
+
+https://mail.google.com/mail/u/0/h/1hrleyb7m742/?&th=152f46e5c649e8dd&v=c
