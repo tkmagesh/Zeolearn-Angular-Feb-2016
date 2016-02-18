@@ -21,4 +21,14 @@ RIA = desktop apps run in the browser
 URL
 Server state  #  client state
 
-https://mail.google.com/mail/u/0/h/1hrleyb7m742/?&th=152f46e5c649e8dd&v=c
+Add a 'Project' module
+    - List the projects
+    
+Modify the bug entity to include the project to which the bug belongs to
+
+Establish routing between the project and bugs
+
+project List > select a project > All the bugs of the project > One bug detail
+
+
+
