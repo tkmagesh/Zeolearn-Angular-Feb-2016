@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bug Tracker</title>
+    <style>
+        .closed{
+            color : red;
+            text-decoration: line-through;
+            font-style: italic;
+            font-weight: bold;
+        }
+        section{
+            margin-bottom: 10px;
+        }
+        section.statistics{
+            font-size: 18pt;
+        }
+        ol{
+            width: 40%;
+            list-style: none;
+        }
+        li {
+            border : 1px solid gray;
+            background-color: #e7e7e7;
+            padding: 5px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        li div.bugname{
+            cursor: pointer;
+            font-size: 18pt;
+
+        }
+        li span.datetime{
+            font-style: italic;
+        }
+
+    </style>
+    <!--
+    Use Cases
+    ============
+    1. Add a new bug - done
+    2. List the bugs - done
+    3. Toggle the completion status of the bug - done
+    4. Remove closed bugs - done
+    5. Display statistics - done
+    6. Search for bugs - done
+    7. Sort the bugs - done
+    8. Improvise the bug display - done
+    9. Persist bugs in localStorage - done
+        window.localStorage
+            key/ value store
+            Both key and value must be strings
+            Use angular.toJson() and angular.fromJson() for serialization and deserialization
+            Persistent
+            Same Origin Policy
+            10 MB limit (Storage API ) per origin
+            APIs
+                - setItem(key, value)
+                - getItem(key) //=> value
+                - removeItem(key)
+                - key(index) //=> key at index
+                - clear()
+                - length
+
+    10. Display 'createdAt' - done
+    11. Persist bugs in server
+    12. Add validations
+    13. Categorize the bugs (routing)
+    14. Testing
+    -->
+    <script src="angular.js"></script>
+    <script src="moment.js"></script>
+    <script src="utils.js"></script>
+    <script>
+
+        var bugTrackerApp = angular.module('bugTrackerApp', ['utils']);
+
+        bugTrackerApp.value('defaultBugName', '[An empty default bug]');
+
+
+        bugTrackerApp.factory("Bug", function(defaultBugName){
+            function Bug(defaults){
+                defaults = defaults || {};
+                this.id = defaults.id || 0;
+                this.name = defaults.name || defaultBugName;
+                this.isClosed = defaults.isClosed || false;
+                this.createdAt = defaults.createdAt || new Date();
+            }
+            Bug.prototype.toggle = function(){
+                this.isClosed = !this.isClosed;
+            };
+            return Bug;
+        });
+
+        bugTrackerApp.factory('bugStorage', function(Bug, $window){
+            var currentBugId = 0;
+            var storage = $window.localStorage;
+
+            function getAllBugs(){
+                var result = [];
+                for(var i=0; i<storage.length; i++){
+                    var key = storage.key(i);
+                    var dataAsString = storage.getItem(key);
+                    var data = angular.fromJson(dataAsString);
+                    var bug = new Bug(data);
+                    currentBugId = currentBugId > bug.id ? currentBugId : bug.id;
+                    result.push(bug);
+                }
+                return result;
+            }
+
+            function addBug(bugName){
+                var newBug = new Bug({id : ++currentBugId, name : bugName, isClosed : false});
+                saveBug(newBug);
+                return newBug;
+            }
+
+            function saveBug(bug){
+                storage.setItem(bug.id, angular.toJson(bug));
+            }
+
+            function removeBug(bug){
+                 storage.removeItem(bug.id);
+            }
+            console.log('returning the bugStorage object');
+            return {
+                getAll : getAllBugs,
+                add : addBug,
+                save : saveBug,
+                remove : removeBug
+            };
+        });
+
+        bugTrackerApp.service('bugsCollection', function(bugStorage){
+            this.list = bugStorage.getAll();
+            this.addNew = function(bugName){
+                var newBug = bugStorage.add(bugName);
+                this.list.push(newBug);
+            };
+            this.toggle = function(bug){
+                bug.toggle();
+                bugStorage.save(bug);
+            };
+            this.removeClosed = function(){
+                for(var i=this.list.length-1; i>=0; i--)
+                   if (this.list[i].isClosed){
+                       bugStorage.remove(this.list[i]);
+                       this.list.splice(i,1);
+                   }
+            };
+        });
+
+        /*bugTrackerApp.controller('bugsController', );*/
+
+        bugTrackerApp.filter('closedCount', function(){
+            return function(bugs){
+                return bugs.reduce(function(result, bug){
+                    return bug.isClosed ? ++result : result;
+                },0)
+           };
+        });
+
+        bugTrackerApp.directive('bugsStatistics', function(){
+            return {
+                templateUrl : 'templates/statisticsTemplate.html',
+                scope : {
+                    bugs : '='
+                }
+            }
+        });
+
+        bugTrackerApp.directive('bugsSearch', function(){
+            return {
+                templateUrl : 'templates/searchTemplate.html',
+                scope : {
+                    bug : '='
+                }
+            }
+        });
+        bugTrackerApp.directive('bugsSort', function(){
+            return {
+                templateUrl : 'templates/sortTemplate.html',
+                scope : {
+                    orderby : '=',
+                    descending : '='
+                    /*applySort : '&'*/
+                }
+            }
+        });
+
+        bugTrackerApp.directive('bugs', function(){
+            return {
+                restrict : 'E',
+                templateUrl : 'templates/bugsTemplate.html',
+                controller : function($scope, bugsCollection){
+                   $scope.bugs = bugsCollection;
+                   $scope.newBugName = '';
+                   $scope.addNew = function(){
+                       bugsCollection.addNew($scope.newBugName);
+                       $scope.newBugName = '';
+                   };
+                   $scope.setSortParams = function(params){
+                       console.log('params -> ', params);
+                   };
+                },
+                scope : {}
+            }
+        });
+        bugTrackerApp.directive('refreshInterval', function($interval, $compile) {
+
+            return function(scope, element, attrs) {
+                var timerId;
+                var time = attrs.refreshInterval ? parseInt(attrs.refreshInterval, 10) : 10000;
+                console.log(time);
+
+                function compileAgain() {
+                    console.log('compiling again')
+                    $compile(element)(scope);
+                }
+
+                timerId = $interval(compileAgain, time);
+
+                element.on('$destroy', function() {
+                    $interval.cancel(timerId);
+                });
+            };
+    });
+    </script>
+</head>
+<body ng-app='bugTrackerApp'>
+    <h1>Bug Tracker</h1>
+    <hr>
+    <bugs></bugs>
+</body>
+</html>

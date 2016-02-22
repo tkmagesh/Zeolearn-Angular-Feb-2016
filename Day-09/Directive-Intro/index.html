@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Directives Demo</title>
+    <script src="jquery-1.12.0.js"></script>
+    <script src="angular.js"></script>
+    <script>
+        var myApp = angular.module('myApp', []);
+        myApp.controller('helloWorldController', function($scope){
+            console.log('scope in controller => ', $scope);
+            $scope.helloWorldMessage = 'Default Hello World Message';
+            $scope.onDirectiveClick = function(){
+                console.log('Custom directive is clicked');
+            }
+        });
+        myApp.directive('helloWorld', function(){
+            return {
+                restrict : 'E',
+                templateUrl : 'helloWorldTemplate.html',
+                replace : true,
+                scope : {
+                    /*message : '@'*/
+                    message : '=',
+                    dirclick : '&'
+                },
+                compile : function($element, $attrs){
+                    //do the dom manipulation that need to occur before the scope is bound
+                    return function($scope, $element, $attrs){
+                        console.log('scope in directive => ', $scope);
+                        console.log('hwm => ', $scope.message);
+                        /*$scope.$watch('message', function(newValue, oldValue){
+                            $element.html(newValue);
+                        });*/
+                        $element.on('click', function(){
+                            $scope.$apply(function(){
+                                $scope.message = 'I have been clicked';
+                            });
+                            $scope.dirclick();
+                        });
+                    }
+                }
+            };
+        });
+    </script>
+</head>
+<body ng-app="myApp" ng-controller='helloWorldController'>
+    <div>
+        <label for="">Message :</label>
+        <input type="text" ng-model='message'>
+        <input type="button" value="Set Message" ng-click='helloWorldMessage = message'>
+    </div>
+    <hello-world message='helloWorldMessage' dirclick="onDirectiveClick()"></hello-world>
+</body>
+</html>

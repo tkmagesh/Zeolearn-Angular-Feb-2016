@@ -1,0 +1,7 @@
+<section class="search">
+    <label for="">Search :</label>
+    <input type="text" ng-model='bug.name'>
+    <label for="">Is Closed ? :</label>
+    <input type="checkbox" ng-model="bug.isClosed">
+    <input type="button" value="Show All" ng-click="bug.isClosed = undefined" ng-hide="bug.isClosed == undefined">
+</section>
