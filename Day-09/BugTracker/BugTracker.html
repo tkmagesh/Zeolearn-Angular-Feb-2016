@@ -72,10 +72,11 @@
     -->
     <script src="angular.js"></script>
     <script src="moment.js"></script>
+    <script src="angular-moment.js"></script>
     <script src="utils.js"></script>
     <script>
 
-        var bugTrackerApp = angular.module('bugTrackerApp', ['utils']);
+        var bugTrackerApp = angular.module('bugTrackerApp', ['utils','angular-moment']);
 
         bugTrackerApp.value('defaultBugName', '[An empty default bug]');
 
@@ -208,25 +209,7 @@
                 scope : {}
             }
         });
-        bugTrackerApp.directive('refreshInterval', function($interval, $compile) {
 
-            return function(scope, element, attrs) {
-                var timerId;
-                var time = attrs.refreshInterval ? parseInt(attrs.refreshInterval, 10) : 10000;
-                console.log(time);
-
-                function compileAgain() {
-                    console.log('compiling again')
-                    $compile(element)(scope);
-                }
-
-                timerId = $interval(compileAgain, time);
-
-                element.on('$destroy', function() {
-                    $interval.cancel(timerId);
-                });
-            };
-    });
     </script>
 </head>
 <body ng-app='bugTrackerApp'>

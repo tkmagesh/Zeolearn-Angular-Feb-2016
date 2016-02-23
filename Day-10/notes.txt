@@ -1,0 +1,45 @@
+Jasmine
+    - bdd framework (others are qunit, mocha);
+    - organize the test code (describe, it)
+    - assertion (expect)
+    - matchers (typeof of assertios)
+    - isolate dependencies - Jasmine Spy
+    
+Protractor
+    - wrapper on Selenium WebDriver
+    - for performing end to end tests (simulating end users)
+    - adds angular specific apis to otherwise generic webdriver apis
+    
+Karma
+    - Test runner
+    - configure the tests to be run in different browsers
+    
+package.json
+    - manifest file for the application
+        - name, version, description, author, keywords, liscence, development dependencies, runtime dependencies, scripts
+        
+Node Modules
+    - npm 
+    
+Bower
+    - manage the client side depencies of the application
+    
+Grunt/Gulp (maven)
+    - build tasks
+    - minify all js files
+    - uglify all the js files
+    - concat all the js files in to one
+    - Minify the html files
+    - Minify css files
+    - combine css files
+    - update html page references with the minified-uglified files
+    - run all unit tests
+    - run all end user tests
+    - create a buid
+    - copy the build to the specified folder
+    
+
+    
+
+    
+    

@@ -10,7 +10,7 @@
         <ol>
             <li ng-repeat="bug in (bugs.list | filter:searchBug | orderBy:sortBug:sortBugDescending) track by $index" ng-click="bugs.toggle(bug)">
                 <div class="bugname" ng-class="{closed : bug.isClosed}">{{bug.name | trimText}}</div>
-                <span class="datetime" refresh-interval>{{bug.createdAt | elapsed }}</span>
+                <span class="datetime" moment-interval="60000">{{bug.createdAt | momentFromNow }}</span>
             </li>
         </ol>
     </section>
